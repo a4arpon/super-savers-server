@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -22,7 +22,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect()
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
     console.log(
@@ -34,12 +33,40 @@ async function run() {
       const result = await toysCollection.find().toArray()
       res.send(result)
     })
+    // Add new toys to server
     app.post('/toys/add', async (req, res) => {
       const doc = req.body
       console.log(doc)
       const result = await toysCollection.insertOne(doc)
       res.send(result)
     })
+    // update toys
+    app.put('/toys/:id', async (req, res) => {
+      const id = req.params.id
+      const filteredToy = { _id: new ObjectId(id) }
+      const updatedToy = req.body
+      console.log(updatedToy)
+      const options = { upsert: false }
+      const updateDoc = {
+        $set: {
+          price: updatedToy.price,
+          quantity: updatedToy.quantity,
+          description: updatedToy.description,
+        },
+      }
+      const result = await toysCollection.updateOne(
+        filteredToy,
+        updateDoc,
+        options
+      )
+      res.send(result)
+    })
+    app.delete('/toys/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await toysCollection.deleteOne(query);
+      res.send(result);
+  })
   } finally {
   }
 }
