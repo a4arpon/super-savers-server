@@ -22,6 +22,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    await client.connect()
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
     console.log(
@@ -33,10 +34,16 @@ async function run() {
       const result = await toysCollection.find().toArray()
       res.send(result)
     })
+    app.post('/toys/add', async (req, res) => {
+      const doc = req.body
+      console.log(doc)
+      const result = await toysCollection.insertOne(doc)
+      res.send(result)
+    })
   } finally {
   }
 }
-run()
+run().catch(console.dir)
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
