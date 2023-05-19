@@ -32,22 +32,31 @@ async function run() {
       }
     })
     // Send a ping to confirm a successful connection
-    await client.db('admin').command({ ping: 1 })
-    console.log(
-      'Pinged your deployment. You successfully connected to MongoDB!'
-    )
+    // await client.db('admin').command({ ping: 1 })
+    // console.log(
+    //   'Pinged your deployment. You successfully connected to MongoDB!'
+    // )
     // Server Code
     const toysCollection = client.db('toyDb').collection('toys')
     app.get('/', async (req, res) => {
-      const query = { rating: { $gt: 4.5 } }
-      const result = await toysCollection.find(query).toArray()
+      const result = await toysCollection.find().toArray()
       res.send(result)
     })
     // Filtred By Category
     app.get('/type/:type', async (req, res) => {
       const type = req.params.type
-      const query = { category: type }
+      let query = { category: type }
+      if (type === 'recommended') {
+        query = { rating: { $gt: 4.5 } }
+      }
       const result = await toysCollection.find(query).toArray()
+      res.send(result)
+    })
+    // Filter by id single toy
+    app.get('/toy/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await toysCollection.findOne(query)
       res.send(result)
     })
     // Add new toys to server
