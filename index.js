@@ -39,7 +39,8 @@ async function run() {
     // Server Code
     const toysCollection = client.db('toyDb').collection('toys')
     app.get('/', async (req, res) => {
-      const result = await toysCollection.find().toArray()
+      const query = { rating: { $gt: 4.0 } };
+      const result = await toysCollection.find(query).toArray()
       res.send(result)
     })
     // Add new toys to server
@@ -70,6 +71,7 @@ async function run() {
       )
       res.send(result)
     })
+    // Delete toy
     app.delete('/toy/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
