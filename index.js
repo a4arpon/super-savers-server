@@ -18,10 +18,19 @@ const client = new MongoClient(uri, {
     strict: true,
     deprecationErrors: true,
   },
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  maxPoolSize: 10,
 })
 
 async function run() {
   try {
+    client.connect((err) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+    })
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
     console.log(
@@ -62,11 +71,11 @@ async function run() {
       res.send(result)
     })
     app.delete('/toy/:id', async (req, res) => {
-      const id = req.params.id;
+      const id = req.params.id
       const query = { _id: new ObjectId(id) }
-      const result = await toysCollection.deleteOne(query);
-      res.send(result);
-  })
+      const result = await toysCollection.deleteOne(query)
+      res.send(result)
+    })
   } finally {
   }
 }
