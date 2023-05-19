@@ -39,7 +39,14 @@ async function run() {
     // Server Code
     const toysCollection = client.db('toyDb').collection('toys')
     app.get('/', async (req, res) => {
-      const query = { rating: { $gt: 4.0 } };
+      const query = { rating: { $gt: 4.5 } }
+      const result = await toysCollection.find(query).toArray()
+      res.send(result)
+    })
+    // Filtred By Category
+    app.get('/type/:type', async (req, res) => {
+      const type = req.params.type
+      const query = { category: type }
       const result = await toysCollection.find(query).toArray()
       res.send(result)
     })
