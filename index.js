@@ -37,7 +37,15 @@ async function run() {
       const currentPage = parseInt(req.query.page) || 0
       const toyLimit = parseInt(req.query.limit) || 20
       const skipToy = currentPage * toyLimit
-      toysCollection.find().skip(skipToy).limit(toyLimit).toArray()
+      const result = toysCollection
+        .find()
+        .skip(skipToy)
+        .limit(toyLimit)
+        .toArray()
+      res.send(result)
+    })
+    app.get('/totalToys', async (req, res) => {
+      const result = await toysCollection.estimatedDocumentCount()
       res.send(result)
     })
     // Filtered By Category
