@@ -46,7 +46,7 @@ async function run() {
     })
     app.get('/totalToys', async (req, res) => {
       const result = await toysCollection.estimatedDocumentCount()
-      res.send({ totalProducts: result })
+      res.send({ totalToys: result })
     })
     // Filtered By Category
     app.get('/type/:type', async (req, res) => {
@@ -67,7 +67,7 @@ async function run() {
     })
     // Get data for single user
     app.post('/myToys', async (req, res) => {
-      const email = req.body
+      const { email } = req.body
       let query = { seller_email: email }
       const result = await toysCollection.find(query).toArray()
       res.send(result)
