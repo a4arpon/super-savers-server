@@ -37,7 +37,7 @@ async function run() {
       const currentPage = parseInt(req.query.page) || 0
       const toyLimit = parseInt(req.query.limit) || 20
       const skipToy = currentPage * toyLimit
-      const result = toysCollection
+      const result = await toysCollection
         .find()
         .skip(skipToy)
         .limit(toyLimit)
@@ -46,7 +46,7 @@ async function run() {
     })
     app.get('/totalToys', async (req, res) => {
       const result = await toysCollection.estimatedDocumentCount()
-      res.send(result)
+      res.send({ totalProducts: result })
     })
     // Filtered By Category
     app.get('/type/:type', async (req, res) => {
