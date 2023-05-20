@@ -31,18 +31,16 @@ async function run() {
         return
       }
     })
-    // Send a ping to confirm a successful connection
-    // await client.db('admin').command({ ping: 1 })
-    // console.log(
-    //   'Pinged your deployment. You successfully connected to MongoDB!'
-    // )
     // Server Code
     const toysCollection = client.db('toyDb').collection('toys')
     app.get('/', async (req, res) => {
-      const result = await toysCollection.find().toArray()
+      const currentPage = parseInt(req.query.page) || 0
+      const toyLimit = parseInt(req.query.limit) || 20
+      const skipToy = currentPage * toyLimit
+      toysCollection.find().skip(skipToy).limit(toyLimit).toArray()
       res.send(result)
     })
-    // Filtred By Category
+    // Filtered By Category
     app.get('/type/:type', async (req, res) => {
       const type = req.params.type
       let query = { category: type }
@@ -59,10 +57,16 @@ async function run() {
       const result = await toysCollection.findOne(query)
       res.send(result)
     })
+    // Get data for single user
+    app.post('/myToys', async (req, res) => {
+      const email = req.body
+      let query = { seller_email: email }
+      const result = await toysCollection.find(query).toArray()
+      res.send(result)
+    })
     // Add new toys to server
     app.post('/toy/add', async (req, res) => {
       const doc = req.body
-      console.log(doc)
       const result = await toysCollection.insertOne(doc)
       res.send(result)
     })
