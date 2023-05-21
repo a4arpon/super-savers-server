@@ -27,3 +27,31 @@ https://b7a11-toy-marketplace-server-side-a4arpon.vercel.app/totalToys
 ```
 
 ---
+
+
+### **POST Request on it get users own toys**
+
+```
+https://b7a11-toy-marketplace-server-side-a4arpon.vercel.app/myToys
+```
+
+---
+### **POST Request on it to post own toys**
+
+```
+https://b7a11-toy-marketplace-server-side-a4arpon.vercel.app/toy/add
+```
+
+---
+### **PUT Request on it to update toys**
+```
+https://b7a11-toy-marketplace-server-side-a4arpon.vercel.app/toy/
+```
+
+---
+### **DELETE Request on it to delete toy**
+```
+https://b7a11-toy-marketplace-server-side-a4arpon.vercel.app/toy/
+```
+
+---
